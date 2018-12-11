@@ -9,6 +9,7 @@ from gold.track.trackstructure import TsRandAlgorithmRegistry
 from gold.track.trackstructure.TsRandAlgorithmRegistry import getRequiredArgsForAlgorithm, getKwArgsForAlgorithm, \
     BIN_SOURCE_ARG, EXCLUDED_TS_ARG
 from gold.track.trackstructure.TsUtils import getRandomizedVersionOfTs
+from lib.quick.application import UserBinSource
 from quick.gsuite.GuiBasedTsFactory import getFlatTracksTS, getSingleTrackTS
 from quick.multitrack.MultiTrackCommon import getGSuiteFromGalaxyTN
 from quick.statistic.TsWriterStat import TsWriterStat
@@ -180,33 +181,43 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
         Mandatory unless isRedirectTool() returns True.
         """
         choices_gsuite = choices.chooseTrackFiles
-
+        choices_randType = choices.randType
+        choices_randAlg = choices.randAlg
+        choices_numberOfTimesToRandomize = choices.numberOfTimesToRandomize
         assert choices_gsuite is not None
 
         genome =  choices.genome
         assert genome is not None
         analysisBins = UserBinMixin.getUserBinSource(choices)
 
+        cls.run_on_extracted_variables(analysisBins, choices_gsuite, choices_numberOfTimesToRandomize, choices_randAlg,
+                                       choices_randType, galaxyFn, genome)
 
+    @classmethod
+    def run_on_extracted_variables(cls, regSpec, binSpec, choices_gsuite, choices_numberOfTimesToRandomize, choices_randAlg,
+                                   choices_randType, galaxyFn, genome):
+        analysisBins = UserBinSource(regSpec, binSpec)
         gsuite = getGSuiteFromGalaxyTN(choices_gsuite)
         for i, gsTrack in enumerate(gsuite.allTracks()):
             assert gsTrack.trackName is not None, "gsuite track %s has track name None" % gsTrack
-
-
         outputGSuite = GSuite()
-        for i in range(0, int(choices.numberOfTimesToRandomize)):
+        for i in range(0, int(choices_numberOfTimesToRandomize)):
             ts = getFlatTracksTS(genome, choices_gsuite)
-            randTvProvider = cls._createTrackViewProvider(ts, analysisBins, choices.genome, choices.randType, choices.randAlg, False, None) #the last False and non are temporary..
+            randTvProvider = cls._createTrackViewProvider(ts, analysisBins, genome, choices_randType, choices_randAlg,
+                                                          False, None)  # the last False and non are temporary..
             randomizedTs = getRandomizedVersionOfTs(ts, randTvProvider)
 
-            #output files
+            # output files
             for singleTrackTs in randomizedTs.getLeafNodes():
                 uri = GalaxyGSuiteTrack.generateURI(galaxyFn=galaxyFn,
-                                                    extraFileName= os.path.sep.join(singleTrackTs.track.trackName) + "_" + str(i) + "_" + '.randomized',
+                                                    extraFileName=os.path.sep.join(
+                                                        singleTrackTs.track.trackName) + "_" + str(
+                                                        i) + "_" + '.randomized',
                                                     suffix='bed')
 
                 title = singleTrackTs.metadata.pop('title')
-                gSuiteTrack = GSuiteTrack(uri, title=title + '.randomized', fileFormat='primary', trackType='segments', genome=genome, attributes=singleTrackTs.metadata)
+                gSuiteTrack = GSuiteTrack(uri, title=title + '.randomized', fileFormat='primary', trackType='segments',
+                                          genome=genome, attributes=singleTrackTs.metadata)
                 outputGSuite.addTrack(gSuiteTrack)
                 singleTrackTs.metadata['trackFilePath'] = gSuiteTrack.path
                 singleTrackTs.metadata['randomization_run'] = i
@@ -214,7 +225,6 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
             spec = AnalysisSpec(TsWriterStat)
 
             res = doAnalysis(spec, analysisBins, randomizedTs)
-
         GSuiteComposer.composeToFile(outputGSuite, galaxyFn)
 
     @classmethod
