@@ -7,9 +7,9 @@ from gold.gsuite.GSuite import GSuite
 from gold.gsuite.GSuiteTrack import GalaxyGSuiteTrack, GSuiteTrack
 from gold.track.trackstructure import TsRandAlgorithmRegistry
 from gold.track.trackstructure.TsRandAlgorithmRegistry import getRequiredArgsForAlgorithm, getKwArgsForAlgorithm, \
-    BIN_SOURCE_ARG, EXCLUDED_TS_ARG
+    BIN_SOURCE_ARG, EXCLUDED_TS_ARG, WITHIN_TRACKS_CATEGORY, PERMUTED_SEGS_AND_INTERSEGS_STR
 from gold.track.trackstructure.TsUtils import getRandomizedVersionOfTs
-from lib.quick.application import UserBinSource
+from quick.application.UserBinSource import UserBinSource
 from quick.gsuite.GuiBasedTsFactory import getFlatTracksTS, getSingleTrackTS
 from quick.multitrack.MultiTrackCommon import getGSuiteFromGalaxyTN
 from quick.statistic.TsWriterStat import TsWriterStat
@@ -195,14 +195,14 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
             assert gsTrack.trackName is not None, "gsuite track %s has track name None" % gsTrack
         ts = getFlatTracksTS(genome, choices_gsuite)
 
-        cls.run_on_extracted_variables(ts, analysisBins, choices_gsuite, choices_numberOfTimesToRandomize, choices_randAlg,
+        cls.run_on_extracted_variables(ts, analysisBins, choices_numberOfTimesToRandomize, choices_randAlg,
                                        choices_randType, galaxyFn, genome)
 
     @classmethod
-    def run_on_extracted_variables(cls, ts, regSpec, binSpec, choices_gsuite, choices_numberOfTimesToRandomize, choices_randAlg,
+    def run_on_extracted_variables(cls, ts, analysisBins, choices_numberOfTimesToRandomize, choices_randAlg,
                                    choices_randType, galaxyFn, genome):
         assert choices_numberOfTimesToRandomize==1 #For now, since ts probably needs to be unique each time..
-        analysisBins = UserBinSource(regSpec, binSpec)
+
         outputGSuite = GSuite()
         for i in range(0, int(choices_numberOfTimesToRandomize)):
             randTvProvider = cls._createTrackViewProvider(ts, analysisBins, genome, choices_randType, choices_randAlg,
@@ -269,137 +269,7 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
         """
         return None
 
-    # @classmethod
-    # def getSubToolClasses(cls):
-    #     """
-    #     Specifies a list of classes for subtools of the main tool. These
-    #     subtools will be selectable from a selection box at the top of the
-    #     page. The input boxes will change according to which subtool is
-    #     selected.
-    #
-    #     Optional method. Default return value if method is not defined: None
-    #     """
-    #     return None
-    #
-    # @classmethod
-    # def isPublic(cls):
-    #     """
-    #     Specifies whether the tool is accessible to all users. If False, the
-    #     tool is only accessible to a restricted set of users as well as admin
-    #     users, as defined in the galaxy.ini file.
-    #
-    #     Optional method. Default return value if method is not defined: False
-    #     """
-    #     return False
-    #
-    # @classmethod
-    # def isRedirectTool(cls):
-    #     """
-    #     Specifies whether the tool should redirect to an URL when the Execute
-    #     button is clicked.
-    #
-    #     Optional method. Default return value if method is not defined: False
-    #     """
-    #     return False
-    #
-    # @classmethod
-    # def getRedirectURL(cls, choices):
-    #     """
-    #     This method is called to return an URL if the isRedirectTool method
-    #     returns True.
-    #
-    #     Mandatory method if isRedirectTool() returns True.
-    #     """
-    #     return ''
-    #
-    # @classmethod
-    # def isHistoryTool(cls):
-    #     """
-    #     Specifies if a History item should be created when the Execute button
-    #     is clicked.
-    #
-    #     Optional method. Default return value if method is not defined: True
-    #     """
-    #     return True
-    #
-    # @classmethod
-    # def isBatchTool(cls):
-    #     """
-    #     Specifies if this tool could be run from batch using the batch. The
-    #     batch run line can be fetched from the info box at the bottom of the
-    #     tool.
-    #
-    #     Optional method. Default return value if method is not defined:
-    #         same as isHistoryTool()
-    #     """
-    #     return cls.isHistoryTool()
-    #
-    # @classmethod
-    # def isDynamic(cls):
-    #     """
-    #     Specifies whether changing the content of textboxes causes the page
-    #     to reload. Returning False stops the need for reloading the tool
-    #     after each input, resulting in less lags for the user.
-    #
-    #     Optional method. Default return value if method is not defined: True
-    #     """
-    #     return True
-    #
-    # @classmethod
-    # def getResetBoxes(cls):
-    #     """
-    #     Specifies a list of input boxes which resets the subsequent stored
-    #     choices previously made. The input boxes are specified by index
-    #     (starting with 1) or by key.
-    #
-    #     Optional method. Default return value if method is not defined: True
-    #     """
-    #     return []
-    #
-    # @classmethod
-    # def getToolDescription(cls):
-    #     """
-    #     Specifies a help text in HTML that is displayed below the tool.
-    #
-    #     Optional method. Default return value if method is not defined: ''
-    #     """
-    #     return ''
-    #
-    # @classmethod
-    # def getToolIllustration(cls):
-    #     """
-    #     Specifies an id used by StaticFile.py to reference an illustration
-    #     file on disk. The id is a list of optional directory names followed
-    #     by a filename. The base directory is STATIC_PATH as defined by
-    #     Config.py. The full path is created from the base directory
-    #     followed by the id.
-    #
-    #     Optional method. Default return value if method is not defined: None
-    #     """
-    #     return None
-    #
-    # @classmethod
-    # def getFullExampleURL(cls):
-    #     """
-    #     Specifies an URL to an example page that describes the tool, for
-    #     instance a Galaxy page.
-    #
-    #     Optional method. Default return value if method is not defined: None
-    #     """
-    #     return None
-    #
-    # @classmethod
-    # def isDebugMode(cls):
-    #     """
-    #     Specifies whether the debug mode is turned on. Debug mode is
-    #     currently mostly used within the Genomic HyperBrowser and will make
-    #     little difference in a plain Galaxy ProTo installation.
-    #
-    #     Optional method. Default return value if method is not defined: False
-    #     """
-    #     return False
-    #
-    # @classmethod
+
     def getOutputFormat(cls, choices):
         """
         The format of the history element with the output of the tool. Note
@@ -430,7 +300,17 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
 
 
 if __name__ == "__main__":
-    RandomizationGuiTool.run_on_extracted_variables("chr1", "*",
+    from gold.track.TrackStructure import SingleTrackTS, FlatTracksTS
+    from gold.track.Track import PlainTrack
+    t = PlainTrack(["test", "test2"])
+    single_track_ts = SingleTrackTS(t, {"title": "dummy"})
+    ts = FlatTracksTS()
+    ts["test"] = single_track_ts
 
+    print(ts)
+    print(t)
 
-    )
+    analysisBins = UserBinSource("chr1", "*")
+    RandomizationGuiTool.run_on_extracted_variables(ts, analysisBins, 1, WITHIN_TRACKS_CATEGORY,
+                                   PERMUTED_SEGS_AND_INTERSEGS_STR, "", "hg18")
+
