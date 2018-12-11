@@ -415,3 +415,7 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
     #     Optional method. Default return value if method is not defined:
     #     the name of the tool.
     #     """
+
+
+if __name__ == "__main__":
+    RandomizationGuiTool.execute(

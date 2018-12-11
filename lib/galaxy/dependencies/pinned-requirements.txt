@@ -5,7 +5,7 @@ PyYAML==3.11
 SQLAlchemy==1.0.8
 # Mercurial >= 3.5 changed the bundle format, which breaks hg push of TS repositories
 mercurial==3.4.2
-numpy==1.9.2
+#numpy==1.9.2
 pycrypto==2.6.1
 
 # Install python_lzo if you want to support indexed access to lzo-compressed
@@ -54,7 +54,7 @@ pbr==1.8.0
 # six==1.9.0 # HyperBrowser uncomment
 Parsley==1.3
 nose==1.3.7
-SVGFig==1.1.6
+#SVGFig==1.1.6
 
 # Fabric and dependencies
 Fabric==1.10.2
@@ -66,7 +66,11 @@ ecdsa==0.13
 # newer release.
 #
 # https://bitbucket.org/mchaput/whoosh/pull-requests/50/fix-lru-thread-safety/diff
-Whoosh==2.4.1+gx1
+#Whoosh==2.4.1+gx1
 
 # Flexible BAM index naming
 pysam==0.8.4+gx1
+
+
+six
+asteval
