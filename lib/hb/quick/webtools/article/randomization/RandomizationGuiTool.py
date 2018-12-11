@@ -428,4 +428,7 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
 
 
 if __name__ == "__main__":
-    RandomizationGuiTool.execute(
+    RandomizationGuiTool.run_on_extracted_variables("chr1", "*",
+
+
+    )
