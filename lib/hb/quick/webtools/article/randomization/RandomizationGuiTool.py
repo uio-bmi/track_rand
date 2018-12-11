@@ -190,19 +190,21 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
         assert genome is not None
         analysisBins = UserBinMixin.getUserBinSource(choices)
 
-        cls.run_on_extracted_variables(analysisBins, choices_gsuite, choices_numberOfTimesToRandomize, choices_randAlg,
-                                       choices_randType, galaxyFn, genome)
-
-    @classmethod
-    def run_on_extracted_variables(cls, regSpec, binSpec, choices_gsuite, choices_numberOfTimesToRandomize, choices_randAlg,
-                                   choices_randType, galaxyFn, genome):
-        analysisBins = UserBinSource(regSpec, binSpec)
         gsuite = getGSuiteFromGalaxyTN(choices_gsuite)
         for i, gsTrack in enumerate(gsuite.allTracks()):
             assert gsTrack.trackName is not None, "gsuite track %s has track name None" % gsTrack
+        ts = getFlatTracksTS(genome, choices_gsuite)
+
+        cls.run_on_extracted_variables(ts, analysisBins, choices_gsuite, choices_numberOfTimesToRandomize, choices_randAlg,
+                                       choices_randType, galaxyFn, genome)
+
+    @classmethod
+    def run_on_extracted_variables(cls, ts, regSpec, binSpec, choices_gsuite, choices_numberOfTimesToRandomize, choices_randAlg,
+                                   choices_randType, galaxyFn, genome):
+        assert choices_numberOfTimesToRandomize==1 #For now, since ts probably needs to be unique each time..
+        analysisBins = UserBinSource(regSpec, binSpec)
         outputGSuite = GSuite()
         for i in range(0, int(choices_numberOfTimesToRandomize)):
-            ts = getFlatTracksTS(genome, choices_gsuite)
             randTvProvider = cls._createTrackViewProvider(ts, analysisBins, genome, choices_randType, choices_randAlg,
                                                           False, None)  # the last False and non are temporary..
             randomizedTs = getRandomizedVersionOfTs(ts, randTvProvider)
