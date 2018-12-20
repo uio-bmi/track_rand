@@ -214,13 +214,13 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
             for singleTrackTs in randomizedTs.getLeafNodes():
                 uri = "outputfile"
 
-                uri = FileGSuiteTrack.generateURI(path='/home/ivargry/file',
-                                                    suffix='bed')
+                uri = FileGSuiteTrack.generateURI(path='/home/ivargry/outfile', suffix='bed',
+                                          trackName=['trackname'], doQuote=False)
 
                 #uri = "file:/home/ivargry/test/test/file2;bed"
 
                 title = singleTrackTs.metadata.pop('title')
-                gSuiteTrack = GSuiteTrack(uri, title=title + '.randomized', fileFormat='primary', trackType='segments',
+                gSuiteTrack = FileGSuiteTrack(uri, title=title + '.randomized', fileFormat='primary', trackType='segments',
                                           genome=genome, attributes=singleTrackTs.metadata)
                 outputGSuite.addTrack(gSuiteTrack)
                 singleTrackTs.metadata['trackFilePath'] = gSuiteTrack.path
