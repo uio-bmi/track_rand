@@ -22,7 +22,7 @@ from config.Config import PARSING_ERROR_DATA_PATH, NONSTANDARD_DATA_PATH, ORIG_D
 from gold.origdata.GtrackGenomeElementSource import GtrackGenomeElementSource
 from config.Config import DATA_FILES_PATH
 from _collections import defaultdict
-from third_party.asteval_raise_errors import Interpreter
+#from third_party.asteval_raise_errors import Interpreter
 
 SHELVE_FN = DATA_FILES_PATH + os.sep + 'StandardizerTool.shelve'
 

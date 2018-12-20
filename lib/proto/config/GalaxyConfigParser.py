@@ -12,6 +12,7 @@ GALAXY_BASE_DIR = os.path.abspath(os.path.dirname(__file__) + '/../../../.')
 
 class GalaxyConfigParser(SafeConfigParser):
     def __init__(self):
+        return
         SafeConfigParser.__init__(self, {'here': GALAXY_BASE_DIR})
 
         self._configFn = None
@@ -28,19 +29,21 @@ class GalaxyConfigParser(SafeConfigParser):
             raise Exception('No Galaxy config file found at path: ' + self._configFn)
 
     def getWithDefault(self, key, default, section='app:main'):
-        try:
-            val = self.get(section, key)
-            if not isinstance(default, basestring):
-                val = ast.literal_eval(val)
-        except:
-            val = default
+        return default
 
-        if type(val) != type(default):
-            raise ValueError('Value for configuration "%s" in section "%s" of file "%s" ' %
-                             (key, section, self._configFn) +
-                             'is incorrect. The value "%s" is of different type ' % val +
-                             'than the default value "%s": %s != %s' %
-                             (default, type(val), type(default)))
-
-        return val
+        # try:
+        #     val = self.get(section, key)
+        #     if not isinstance(default, basestring):
+        #         val = ast.literal_eval(val)
+        # except:
+        #     val = default
+        #
+        # if type(val) != type(default):
+        #     raise ValueError('Value for configuration "%s" in section "%s" of file "%s" ' %
+        #                      (key, section, self._configFn) +
+        #                      'is incorrect. The value "%s" is of different type ' % val +
+        #                      'than the default value "%s": %s != %s' %
+        #                      (default, type(val), type(default)))
+        #
+        # return val
 
