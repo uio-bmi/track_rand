@@ -21,7 +21,7 @@ LOAD_DISK_MEMOIZATION = config.getWithDefault('load_disk_memoization', False, 'h
 STORE_DISK_MEMOIZATION = config.getWithDefault('store_disk_memoization', False, 'hyperbrowser')
 PRINT_PROGRESS = config.getWithDefault('print_progress', True, 'hyperbrowser')
 ALLOW_COMP_BIN_SPLITTING = config.getWithDefault('allow_comp_bin_splitting', False, 'hyperbrowser')
-ALLOW_GSUITE_FILE_PROTOCOL = config.getWithDefault('allow_gsuite_file_protocol', False, 'hyperbrowser')
+ALLOW_GSUITE_FILE_PROTOCOL = config.getWithDefault('allow_gsuite_file_protocol', True, 'hyperbrowser')
 USE_PARALLEL = config.getWithDefault('use_parallel', False, 'hyperbrowser')
 
 #

@@ -4,7 +4,7 @@ from gold.track.TrackFormat import TrackFormatReq, NeutralTrackFormatReq, TrackF
 from gold.util.CommonFunctions import getClassName, prettyPrintTrackName
 from gold.util.CustomExceptions import IncompatibleTracksError
 from gold.formatconversion.AllFormatConverters import getFormatConverters, getFormatConverterByName
-from gold.description.TrackInfo import TrackInfo
+from gtrackcore.metadata.TrackInfo import TrackInfo
 from quick.application.ExternalTrackManager import ExternalTrackManager
 
 

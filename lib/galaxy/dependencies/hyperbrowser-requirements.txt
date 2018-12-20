@@ -30,3 +30,6 @@ mock>=2.0
 #lxml==2.3.1
 #pypar===2.1.4_94
 #PyCluster = 1.49
+
+# Lastes rpy2 that works with python 2.7
+pip install rpy2==2.8.6

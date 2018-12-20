@@ -36,8 +36,11 @@ def createDirPath(trackName, genome, chr=None, allowOverlaps=False, basePath=PRO
 
     #print [basePath, str(CompBinManager.getIndexBinSize()), ('withOverlaps' if allowOverlaps else 'noOverlaps'), genome] +\
     #    list(trackName) + ([chr] if chr is not None else [])
+    return os.sep.join(["/home/ivargry/gtrackcore_data/Processed", str(CompBinManager.getIndexBinSize()),
+                        ('withOverlaps' if allowOverlaps else 'noOverlaps'), genome] + \
+                       list(trackName))
 
-    return os.sep.join( [basePath, str(CompBinManager.getIndexBinSize()), ('withOverlaps' if allowOverlaps else 'noOverlaps'), genome] +\
+    return os.sep.join( ["/home/ivar/gtrackcore_data/Processed", str(CompBinManager.getIndexBinSize()), ('withOverlaps' if allowOverlaps else 'noOverlaps'), genome] +\
         list(trackName) + ([chr] if chr is not None else []) )
 
 

@@ -112,8 +112,12 @@ def getKwArgsForAlgorithm(category, algorithm):
 
 
 def _getArgSpecForAlgorithmInit(category, algorithm):
+    print("Category:" , category)
+    print("Algoritthm", algorithm)
+    print(_RAND_ALGORITHM_REGISTRY)
     randAlgSpec = _RAND_ALGORITHM_REGISTRY[category][algorithm]
     randAlgCls = randAlgSpec.randAlgorithmCls
+
 
     if randAlgCls:
         argSpec = inspect.getargspec(randAlgCls.__init__)

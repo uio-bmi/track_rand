@@ -17,6 +17,7 @@ from quick.webtools.GeneralGuiTool import GeneralGuiTool
 from proto.HtmlCore import HtmlCore
 from quick.webtools.mixin.RandAlgorithmMixin import RandAlgorithmMixin
 from quick.webtools.mixin.UserBinMixin import UserBinMixin
+from gold.gsuite.GSuiteTrack import FileGSuiteTrack
 
 
 class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
@@ -205,17 +206,18 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
 
         outputGSuite = GSuite()
         for i in range(0, int(choices_numberOfTimesToRandomize)):
-            randTvProvider = cls._createTrackViewProvider(ts, analysisBins, genome, choices_randType, choices_randAlg,
+            randTvProvider = cls._createTrackViewProvider(ts, analysisBins, genome, choices_randAlg, choices_randType,
                                                           False, None)  # the last False and non are temporary..
             randomizedTs = getRandomizedVersionOfTs(ts, randTvProvider)
 
             # output files
             for singleTrackTs in randomizedTs.getLeafNodes():
-                uri = GalaxyGSuiteTrack.generateURI(galaxyFn=galaxyFn,
-                                                    extraFileName=os.path.sep.join(
-                                                        singleTrackTs.track.trackName) + "_" + str(
-                                                        i) + "_" + '.randomized',
+                uri = "outputfile"
+
+                uri = FileGSuiteTrack.generateURI(path='/home/ivargry/file',
                                                     suffix='bed')
+
+                #uri = "file:/home/ivargry/test/test/file2;bed"
 
                 title = singleTrackTs.metadata.pop('title')
                 gSuiteTrack = GSuiteTrack(uri, title=title + '.randomized', fileFormat='primary', trackType='segments',
@@ -302,7 +304,7 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
 if __name__ == "__main__":
     from gold.track.TrackStructure import SingleTrackTS, FlatTracksTS
     from gold.track.Track import PlainTrack
-    t = PlainTrack(["test", "test2"])
+    t = PlainTrack(["test"])
     single_track_ts = SingleTrackTS(t, {"title": "dummy"})
     ts = FlatTracksTS()
     ts["test"] = single_track_ts
@@ -310,7 +312,7 @@ if __name__ == "__main__":
     print(ts)
     print(t)
 
-    analysisBins = UserBinSource("chr1", "*")
+    analysisBins = UserBinSource("chr1", "*", genome="hg18")
     RandomizationGuiTool.run_on_extracted_variables(ts, analysisBins, 1, WITHIN_TRACKS_CATEGORY,
                                    PERMUTED_SEGS_AND_INTERSEGS_STR, "", "hg18")
 
