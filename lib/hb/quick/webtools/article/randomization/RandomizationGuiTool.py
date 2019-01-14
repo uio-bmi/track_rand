@@ -1,3 +1,4 @@
+from random import randint
 import os
 
 from gold.application.HBAPI import doAnalysis
@@ -206,18 +207,20 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
 
         outputGSuite = GSuite()
         for i in range(0, int(choices_numberOfTimesToRandomize)):
+            print("TF leaf nodes")
+            print(ts.getLeafNodes())
             randTvProvider = cls._createTrackViewProvider(ts, analysisBins, genome, choices_randAlg, choices_randType,
                                                           False, None)  # the last False and non are temporary..
             randomizedTs = getRandomizedVersionOfTs(ts, randTvProvider)
 
             # output files
-            for singleTrackTs in randomizedTs.getLeafNodes():
+            print("Leaf nodes")
+            print(randomizedTs.getLeafNodes())
+            for j, singleTrackTs in enumerate(randomizedTs.getLeafNodes()):
                 uri = "outputfile"
 
-                uri = FileGSuiteTrack.generateURI(path='/home/ivargry/outfile', suffix='bed',
-                                          trackName=['trackname'], doQuote=False)
-
-                #uri = "file:/home/ivargry/test/test/file2;bed"
+                uri = FileGSuiteTrack.generateURI(path='/home/ivargry/outfile_' + str(randint(0,999999999)) + '_' + str(j) + ".bed", suffix='bed', doQuote=False)
+                print("URI: " + uri)
 
                 title = singleTrackTs.metadata.pop('title')
                 gSuiteTrack = FileGSuiteTrack(uri, title=title + '.randomized', fileFormat='primary', trackType='segments',
@@ -229,6 +232,7 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
             spec = AnalysisSpec(TsWriterStat)
 
             res = doAnalysis(spec, analysisBins, randomizedTs)
+        assert galaxyFn != ""
         GSuiteComposer.composeToFile(outputGSuite, galaxyFn)
 
     @classmethod
@@ -300,19 +304,30 @@ class RandomizationGuiTool(GeneralGuiTool, RandAlgorithmMixin, UserBinMixin):
     #     the name of the tool.
     #     """
 
+def create_track(file_name, trackName):
+    from gtrackcore.core.Api import importFile
+    importFile(file_name, genome="hg18", trackName=trackName)
+    t = PlainTrack([trackName])
+    single_track_ts = SingleTrackTS(t, {"title": trackName})
+    return single_track_ts
+
 
 if __name__ == "__main__":
     from gold.track.TrackStructure import SingleTrackTS, FlatTracksTS
     from gold.track.Track import PlainTrack
-    t = PlainTrack(["test"])
-    single_track_ts = SingleTrackTS(t, {"title": "dummy"})
+    track1 = create_track("testfile8.bed", "testfile8")
+    track2 = create_track("testfile7.bed", "testfile7")
+
+
+    #run_analysis("testfile.k")
+    #t = PlainTrack(["test"])
     ts = FlatTracksTS()
-    ts["test"] = single_track_ts
+    ts["test1"] = track1
+    ts["test2"] = track2
 
     print(ts)
-    print(t)
 
     analysisBins = UserBinSource("chr1", "*", genome="hg18")
     RandomizationGuiTool.run_on_extracted_variables(ts, analysisBins, 1, WITHIN_TRACKS_CATEGORY,
-                                   PERMUTED_SEGS_AND_INTERSEGS_STR, "", "hg18")
+                                   PERMUTED_SEGS_AND_INTERSEGS_STR, galaxyFn="./testfile.gsuite", genome="hg18")
 

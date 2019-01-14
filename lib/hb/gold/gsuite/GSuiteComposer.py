@@ -74,6 +74,7 @@ def composeToString(gSuite):
     return memFile.getvalue()
 
 def composeToFile(gSuite, outFileName):
+    print("Outfilename", outFileName)
     ensurePathExists(outFileName)
     with open(outFileName, 'w') as out:
         ok = _composeCommon(gSuite, out)
